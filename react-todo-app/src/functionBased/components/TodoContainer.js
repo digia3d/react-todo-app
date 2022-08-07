@@ -3,6 +3,7 @@ import Header from "./Header"
 import InputTodo from "./InputTodo"
 import TodosList from "./TodosList"
 import { v4 as uuidv4 } from "uuid"
+import { Route, Switch } from "react-router-dom"
 
 const TodoContainer = () => {
   const [todos, setTodos] = useState(getInitialTodos())
@@ -51,11 +52,11 @@ const TodoContainer = () => {
 
   useEffect(() => {
     console.log("test run")
-  
+
     // getting stored items
     const temp = localStorage.getItem("todos")
     const loadedTodos = JSON.parse(temp)
-  
+
     if (loadedTodos) {
       setTodos(loadedTodos)
     }
@@ -75,18 +76,20 @@ const TodoContainer = () => {
   }, [todos])
 
   return (
-    <div className="container">
-      <div className="inner">
-        <Header />
-        <InputTodo addTodoProps={addTodoItem} />
-        <TodosList
-          todos={todos}
-          handleChangeProps={handleChange}
-          deleteTodoProps={delTodo}
-          setUpdate={setUpdate}
-        />
+    <Route exact path="/">
+      <div className="container">
+        <div className="inner">
+          <Header />
+          <InputTodo addTodoProps={addTodoItem} />
+          <TodosList
+            todos={todos}
+            handleChangeProps={handleChange}
+            deleteTodoProps={delTodo}
+            setUpdate={setUpdate}
+          />
+        </div>
       </div>
-    </div>
+    </Route>
   )
 }
 
