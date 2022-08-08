@@ -1,48 +1,58 @@
-import React, { useState } from "react"
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { MdAddCircleOutline } from 'react-icons/md';
 
-import { FaPlusCircle } from "react-icons/fa"
+function InputTodo(props) {
+  const [inputField, setInputField] = useState({
+    title: '',
+  });
 
-const InputTodo = props => {
-  const [inputText, setInputText] = useState({
-    title: "",
-  })
+  const { addTodoItem } = props;
 
-  const onChange = e => {
-    setInputText({
-      ...inputText,
-      [e.target.name]: e.target.value,
-    })
-  }
+  const onChange = (e) => {
+    setInputField({
+      title: e.target.value,
+    });
+  };
 
-  const handleSubmit = e => {
-    e.preventDefault()
-    if (inputText.title.trim()) {
-      props.addTodoProps(inputText.title)
-      setInputText({
-        title: "",
-      })
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (inputField.title.trim()) {
+      addTodoItem(inputField.title);
+      setInputField({
+        title: '',
+      });
     } else {
-      alert("Please write item")
+      throw new Error('ToDo Title cannot be empty');
     }
-  }
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="form-container">
+    <form
+      className="form-container"
+      onSubmit={handleSubmit}
+    >
       <input
         type="text"
-        className="input-text"
-        placeholder="Add todo..."
-        value={inputText.title}
-        name="title"
+        placeholder="Add to do...."
+        value={inputField.title}
         onChange={onChange}
+        className="input-text"
       />
-      <button className="input-submit">
-        <FaPlusCircle
-          style={{ color: "darkcyan", fontSize: "20px", marginTop: "2px" }}
+      <button type="button" className="input-submit">
+        <MdAddCircleOutline style={{
+          color: '#0f8a0f',
+          fontSize: '1.25rem',
+          fontWeight: '600',
+        }}
         />
       </button>
     </form>
-  )
+  );
 }
 
-export default InputTodo
+InputTodo.propTypes = {
+  addTodoItem: PropTypes.func.isRequired,
+};
+
+export default InputTodo;

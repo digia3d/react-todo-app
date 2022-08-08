@@ -1,67 +1,92 @@
-import React from "react"
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { MdDeleteForever } from 'react-icons/md';
+import styles from './TodoItem.module.css';
 
-import styles from "./TodoItem.module.css"
-class TodoItem extends React.Component {
-  state = {
-    editing: false,
-  }
-  handleEditing = () => {
-    this.setState({
-      editing: true,
-    })
+function TodoItem(props) {
+  const {
+    todo, updateCheckbox, deleteItem, updateTitle,
+  } = props;
+  const { id, title, completed } = todo;
+
+  function handleCheckbox() {
+    updateCheckbox(id);
   }
 
-  handleUpdatedDone = event => {
-    if (event.key === "Enter") {
-      this.setState({ editing: false })
+  function handleDeleteItem() {
+    deleteItem(id);
+  }
+
+  const [editing, setEditing] = useState(false);
+
+  const handleEditing = () => {
+    setEditing(true);
+  };
+
+  const handleUpdatedDone = (event) => {
+    if (event.key === 'Enter') {
+      setEditing(false);
     }
+  };
+
+  const handleUpdateTitle = (e) => {
+    updateTitle(e.target.value, id);
+  };
+
+  const viewMode = {};
+  const editMode = {};
+
+  if (editing) {
+    viewMode.display = 'none';
+  } else {
+    editMode.display = 'none';
   }
 
-  componentWillUnmount() {
-    console.log("Cleaning up...")
-  }
+  const completedStyle = {
+    fontStyle: 'italic',
+    color: '#595959',
+    opacity: 0.4,
+    textDecoration: 'line-through',
+  };
 
-  render() {
-    const completedStyle = {
-      fontStyle: "italic",
-      color: "#595959",
-      opacity: 0.4,
-      textDecoration: "line-through",
-    }
-    const { completed, id, title } = this.props.todo
-    let viewMode = {}
-    let editMode = {}
-
-    if (this.state.editing) {
-      viewMode.display = "none"
-    } else {
-      editMode.display = "none"
-    }
-    return (
-      <li className={styles.item}>
-        <div onDoubleClick={this.handleEditing} style={viewMode}>
-          <input
-            type="checkbox"
-            className={styles.checkbox}
-            checked={completed}
-            onChange={() => this.props.handleChangeProps(id)}
-          />
-          <button onClick={() => this.props.deleteTodoProps(id)}>Delete</button>
-          <span style={completed ? completedStyle : null}>{title}</span>
-        </div>
+  return (
+    <li className={styles.item}>
+      <div onDoubleClick={handleEditing} style={viewMode}>
         <input
-          type="text"
-          style={editMode}
-          className={styles.textInput}
-          value={title}
-          onChange={e => {
-            this.props.setUpdate(e.target.value, id)
-          }}
-          onKeyDown={this.handleUpdatedDone}
+          type="checkbox"
+          checked={completed}
+          onChange={handleCheckbox}
+          className={styles.checkbox}
         />
-      </li>
-    )
-  }
+        <span style={completed ? completedStyle : null}>
+          {title}
+        </span>
+        <button type="button" onClick={handleDeleteItem}>
+          <MdDeleteForever style={{
+            color: '#eb4747',
+            fontSize: '1.25rem',
+            fontWeight: '600',
+          }}
+          />
+        </button>
+      </div>
+      <input
+        type="text"
+        style={editMode}
+        className={styles.textinput}
+        value={title}
+        onChange={handleUpdateTitle}
+        onKeyDown={handleUpdatedDone}
+      />
+    </li>
+  );
 }
 
-export default TodoItem
+TodoItem.propTypes = {
+  updateTitle: PropTypes.func.isRequired,
+  updateCheckbox: PropTypes.func.isRequired,
+  deleteItem: PropTypes.func.isRequired,
+  todo: PropTypes.shape(PropTypes.string).isRequired,
+};
+
+export default TodoItem;

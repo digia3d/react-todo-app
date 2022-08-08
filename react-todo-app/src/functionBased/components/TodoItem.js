@@ -1,71 +1,92 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { MdDeleteForever } from 'react-icons/md';
+import styles from './TodoItem.module.css';
 
-import styles from "./TodoItem.module.css"
-import { FaTrash } from "react-icons/fa"
+function TodoItem(props) {
+  const {
+    todo, updateCheckbox, deleteItem, updateTitle,
+  } = props;
+  const { id, title, completed } = todo;
 
-const TodoItem = props => {
-  const [editing, setEditing] = useState(false)
-
-  const handleEditing = () => {
-    setEditing(true)
+  function handleCheckbox() {
+    updateCheckbox(id);
   }
 
-  const handleUpdatedDone = event => {
-    if (event.key === "Enter") {
-      setEditing(false)
+  function handleDeleteItem() {
+    deleteItem(id);
+  }
+
+  const [editing, setEditing] = useState(false);
+
+  const handleEditing = () => {
+    setEditing(true);
+  };
+
+  const handleUpdatedDone = (event) => {
+    if (event.key === 'Enter') {
+      setEditing(false);
     }
+  };
+
+  const handleUpdateTitle = (e) => {
+    updateTitle(e.target.value, id);
+  };
+
+  const viewMode = {};
+  const editMode = {};
+
+  if (editing) {
+    viewMode.display = 'none';
+  } else {
+    editMode.display = 'none';
   }
 
   const completedStyle = {
-    fontStyle: "italic",
-    color: "#595959",
+    fontStyle: 'italic',
+    color: '#595959',
     opacity: 0.4,
-    textDecoration: "line-through",
-  }
-
-  const { completed, id, title } = props.todo
-
-  let viewMode = {}
-  let editMode = {}
-
-  if (editing) {
-    viewMode.display = "none"
-  } else {
-    editMode.display = "none"
-  }
-
-  useEffect(() => {
-    return () => {
-      console.log("Cleaning up...")
-    }
-  }, [])
+    textDecoration: 'line-through',
+  };
 
   return (
     <li className={styles.item}>
       <div onDoubleClick={handleEditing} style={viewMode}>
         <input
           type="checkbox"
-          className={styles.checkbox}
           checked={completed}
-          onChange={() => props.handleChangeProps(id)}
+          onChange={handleCheckbox}
+          className={styles.checkbox}
         />
-        <button onClick={() => props.deleteTodoProps(id)}>
-          <FaTrash style={{ color: "orangered", fontSize: "16px" }} />
+        <span style={completed ? completedStyle : null}>
+          {title}
+        </span>
+        <button type="button" onClick={handleDeleteItem}>
+          <MdDeleteForever style={{
+            color: '#eb4747',
+            fontSize: '1.25rem',
+            fontWeight: '600',
+          }}
+          />
         </button>
-        <span style={completed ? completedStyle : null}>{title}</span>
       </div>
       <input
         type="text"
         style={editMode}
-        className={styles.textInput}
+        className={styles.textinput}
         value={title}
-        onChange={e => {
-          props.setUpdate(e.target.value, id)
-        }}
+        onChange={handleUpdateTitle}
         onKeyDown={handleUpdatedDone}
       />
     </li>
-  )
+  );
 }
 
-export default TodoItem
+TodoItem.propTypes = {
+  updateTitle: PropTypes.func.isRequired,
+  updateCheckbox: PropTypes.func.isRequired,
+  deleteItem: PropTypes.func.isRequired,
+  todo: PropTypes.shape(PropTypes.string).isRequired,
+};
+
+export default TodoItem;
