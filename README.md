@@ -3,6 +3,16 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 This project represents a To-Do application that can help you in your every days tasks.
 
+## Built With
+   -JavaScript React
+   -CSS -React
+
+## Getting Started
+To get a local copy of this project, follow these simple steps:
+- Clone this repo on your local terminal with git clone.
+- Run `cd <name of the folder>` to access the project folder
+- Use the following commands: npm install , npm start
+
 ## Available Scripts
 
 In the project directory, you can run:
